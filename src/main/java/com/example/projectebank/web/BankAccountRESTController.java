@@ -1,20 +1,17 @@
 package com.example.projectebank.web;
 
-import com.example.projectebank.dtos.AccountHistoryDTO;
-import com.example.projectebank.dtos.AccountOperationDTO;
-import com.example.projectebank.dtos.BankAccountDTO;
+import com.example.projectebank.dtos.*;
 import com.example.projectebank.exceptions.BankAccountNotFound;
+import com.example.projectebank.exceptions.InsufficientBalanceException;
 import com.example.projectebank.sevices.BankAccountService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin("*")
 public class BankAccountRESTController {
     private BankAccountService bankAccountService;
 
@@ -38,5 +35,22 @@ public class BankAccountRESTController {
                                         @RequestParam(name = "page", defaultValue = "0") int page,
                                         @RequestParam(name = "size", defaultValue = "5") int size) throws BankAccountNotFound {
         return bankAccountService.getAccountHistory(accountID, page, size);
+    }
+
+    @PostMapping("/accounts/debit")
+    public DebitDTO debit(@RequestBody DebitDTO debitDTO) throws InsufficientBalanceException, BankAccountNotFound {
+        bankAccountService.debit(debitDTO.getAccountID(), debitDTO.getAmount(), debitDTO.getDescription());
+        return debitDTO;
+    }
+
+    @PostMapping("/accounts/credit")
+    public DebitDTO credit(@RequestBody DebitDTO creditDTO) throws BankAccountNotFound, InsufficientBalanceException {
+        bankAccountService.credit(creditDTO.getAccountID(), creditDTO.getAmount(), creditDTO.getDescription());
+        return creditDTO;
+    }
+
+    @PostMapping("/accounts/transfer")
+    public void transfer(@RequestBody TransferRequestDTO transferDTO) throws BankAccountNotFound, InsufficientBalanceException {
+        bankAccountService.transfer(transferDTO.getAccountSource(), transferDTO.getAccountDestination(), transferDTO.getAmount());
     }
 }
