@@ -41,8 +41,8 @@ public class SecurityConfig {
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
         return new InMemoryUserDetailsManager(
-                User.withUsername("user1").password(passwordEncoder().encode("12345")).authorities("USER").build(),
-                User.withUsername("admin").password(passwordEncoder().encode("12345")).authorities("USER", "ADMIN").build()
+                User.withUsername("user1").password(passwordEncoder().encode("6e705050-d6a9-11ef-b241-b7cf0dab92a4")).authorities("USER").build(),
+                User.withUsername("admin").password(passwordEncoder().encode("72190558-d6a9-11ef-a3a2-5bdff449d142")).authorities("USER", "ADMIN").build()
         );
     }
 
